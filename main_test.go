@@ -36,7 +36,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestCheckForArgumentsM1(t *testing.T) {
-	t.Run("invalid args", func(t *testing.T) {
+	t.Run("no args", func(t *testing.T) {
 		dir, err := os.Getwd()
 		if err != nil {
 			t.Fatal(err)
@@ -47,7 +47,12 @@ func TestCheckForArgumentsM1(t *testing.T) {
 		if err == nil || !strings.Contains(string(output), errInvalidArguments.Error()) {
 			t.Fatal("Did not validate command line arguments properly")
 		}
-
+	})
+		t.Run("too many args", func(t *testing.T) {
+			dir, err := os.Getwd()
+			if err != nil {
+				t.Fatal(err)
+			}
 		// Runs the program with more than enough
 		cmd2 := exec.Command(path.Join(dir, binaryName), []string{"one", "two"}...)
 		output2, err2 := cmd2.CombinedOutput()
@@ -260,7 +265,7 @@ func TestParsePromptToUpperM2(t *testing.T) {
 		if e != nil {
 			panic(e)
 		}
-		stdin.Close()
+		_ = stdin.Close()
 		outPrint, _ := ioutil.ReadAll(outPipe)
 		if !strings.Contains(string(outPrint), "32 F = 0 C") ||
 			!strings.Contains(string(outPrint), "212 F = 100 C") {
